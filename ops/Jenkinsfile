@@ -82,9 +82,7 @@ pipeline {
         }
         stage('Integration tests') {
             steps {
-                // Add delay to allow services to potentially stabilize
-                sh 'echo "Waiting a bit for services to start..."'
-                sh 'sleep 15' // Wait 15 seconds
+
 
                 // Check API logs using docker compose logs within the correct directory
                 dir("./env-dev") {
@@ -120,7 +118,7 @@ pipeline {
                 // tag images
                 sh "docker image tag enetspace-client youssef37/enetspace-client:${GIT_COMMIT}"
                 sh "docker image tag enetspace-api youssef37/enetspace-api:${GIT_COMMIT}"
-                sh "docker image tag nginx:alpine youssef37/enetspace-nginx:${GIT_COMMIT}"
+                sh "docker image tag env-dev-nginx youssef37/enetspace-nginx:${GIT_COMMIT}"
                 // Login to Docker Hub
                 sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                 // push images
@@ -136,6 +134,7 @@ pipeline {
                     sh "docker rmi youssef37/enetspace-nginx:${GIT_COMMIT}"
                     sh "docker rmi enetspace-client"
                     sh "docker rmi enetspace-api"
+                    sh "docker rmi env-dev-nginx"
                     sh "docker rmi mongo:4.4.17-focal"
                     sh "docker rmi nginx:alpine"
                 }
