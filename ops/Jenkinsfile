@@ -77,12 +77,9 @@ pipeline {
 
                 // Check API logs using docker compose logs within the correct directory
                 dir("./env-dev") {
-                    sh 'echo "--- Listing files in env-dev ---"'
-                    sh 'ls -la' // Add this line to list files
-                    sh 'echo "--- Checking enetspace-api logs ---"'
-                    // Use docker compose logs <service_name>
+                    sh 'docker compose -f docker-compose.staging.yml ps'
                     sh 'docker compose -f docker-compose.staging.yml logs enetspace-api'
-                    sh 'echo "--- End API logs ---"'
+                    sh 'docker compose -f docker-compose.staging.yml logs nginx'
                 }
 
                 // Confirm file exists and has execute permissions
