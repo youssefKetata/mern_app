@@ -161,13 +161,27 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sh "curl 'http://prod_nginx:80'"
+                // Install curl within the docker agent (assuming Alpine base image)
+                sh 'apk update && apk add curl' 
+                
+                // Add a small delay to allow services to potentially stabilize after update
+                sh 'echo "Waiting a few seconds before smoke test..."'
+                sh 'sleep 10' 
+
+                // Attempt the smoke test - NOTE: This URL might need adjustment
+                // This assumes the Jenkins agent can resolve 'prod_nginx'. 
+                // A better test might curl the public IP/port if available.
+                sh "curl --fail --silent --show-error 'http://prod_nginx:80'" 
             }
             post {
                 failure {
+                    echo "Smoke test failed! Rolling back services."
                     sh "docker service rollback prod_enetspace-client"
                     sh "docker service rollback prod_enetspace-api"
                     sh "docker service rollback prod_nginx"
+                }
+                success {
+                    echo "Smoke test passed. Deployment successful."
                 }
             }
         }
