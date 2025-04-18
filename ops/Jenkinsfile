@@ -128,15 +128,17 @@ pipeline {
             }
             post {
                 always {
-                    // remove local images
+                    // remove local images tagged with the commit hash
                     sh "docker rmi youssef37/enetspace-client:${GIT_COMMIT}"
                     sh "docker rmi youssef37/enetspace-api:${GIT_COMMIT}"
                     sh "docker rmi youssef37/enetspace-nginx:${GIT_COMMIT}"
+                    // remove the build images created during the staging phase
                     sh "docker rmi enetspace-client"
                     sh "docker rmi enetspace-api"
                     sh "docker rmi env-dev-nginx"
-                    sh "docker rmi mongo:4.4.17-focal"
-                    sh "docker rmi nginx:alpine"
+                    // Comment out or remove attempts to delete base images
+                    // sh "docker rmi mongo:4.4.17-focal" 
+                    // sh "docker rmi nginx:alpine"
                 }
             }
         }
