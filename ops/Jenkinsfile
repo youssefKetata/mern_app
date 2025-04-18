@@ -163,17 +163,16 @@ pipeline {
                 branch 'main'
             }
             steps {
-                // Install curl within the docker agent (assuming Alpine base image)
+                // Install curl within the docker agent
                 sh 'apk update && apk add curl' 
                 
-                // Add a small delay to allow services to potentially stabilize after update
                 sh 'echo "Waiting a few seconds before smoke test..."'
                 sh 'sleep 10' 
 
-                // Attempt the smoke test - NOTE: This URL might need adjustment
-                // This assumes the Jenkins agent can resolve 'prod_nginx'. 
-                // A better test might curl the public IP/port if available.
-                sh "curl --fail --silent --show-error 'http://prod_nginx:80'" 
+                // --- !!! IMPORTANT !!! ---
+                // Replace YOUR_SWARM_NODE_PUBLIC_IP with the actual IP address
+                // Replace 80 if your service publishes a different external port
+                sh "curl --fail --silent --show-error 'http://localhost:80'" 
             }
             post {
                 failure {
