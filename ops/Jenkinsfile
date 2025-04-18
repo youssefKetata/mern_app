@@ -132,10 +132,12 @@ pipeline {
                     sh "docker rmi youssef37/enetspace-client:${GIT_COMMIT}"
                     sh "docker rmi youssef37/enetspace-api:${GIT_COMMIT}"
                     sh "docker rmi youssef37/enetspace-nginx:${GIT_COMMIT}"
-                    // remove the build images created during the staging phase
-                    sh "docker rmi enetspace-client"
-                    sh "docker rmi enetspace-api"
-                    sh "docker rmi env-dev-nginx"
+                    
+                    // Comment out removal of build images to avoid conflicts
+                    // sh "docker rmi enetspace-client"
+                    // sh "docker rmi enetspace-api"
+                    // sh "docker rmi env-dev-nginx"
+                    
                     // Comment out or remove attempts to delete base images
                     // sh "docker rmi mongo:4.4.17-focal" 
                     // sh "docker rmi nginx:alpine"
