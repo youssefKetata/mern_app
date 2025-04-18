@@ -37,14 +37,14 @@ pipeline {
         stage('Unit tests') {
             steps {
                 // run Jest tests
-                sh 'docker exec supspace-client npm test'
+                sh 'docker exec enetspace-client npm test'
             }
             post { // clean-up dev
                 always {
                     dir("./env-dev") {
                         sh 'docker compose -f docker-compose.dev.yml down'
-                        sh 'docker rmi supspace-client'
-                        sh 'docker rmi supspace-api'
+                        sh 'docker rmi enetspace-client'
+                        sh 'docker rmi enetspace-api'
                     }
                 }
             }
@@ -102,32 +102,32 @@ pipeline {
                 }
                 failure {
                     // // If tests fail, remove failed staging images
-                    sh 'docker rmi supspace-client'
-                    sh 'docker rmi supspace-api'
+                    sh 'docker rmi enetspace-client'
+                    sh 'docker rmi enetspace-api'
                 }
             }
         }
         stage('Push images to Registry') {
             steps {
                 // tag images
-                sh "docker image tag supspace-client edamh158/supspace-client:${GIT_COMMIT}"
-                sh "docker image tag supspace-api edamh158/supspace-api:${GIT_COMMIT}"
-                sh "docker image tag nginx:alpine edamh158/supspace-nginx:${GIT_COMMIT}"
+                sh "docker image tag enetspace-client youssef37/enetspace-client:${GIT_COMMIT}"
+                sh "docker image tag enetspace-api youssef37/enetspace-api:${GIT_COMMIT}"
+                sh "docker image tag nginx:alpine youssef37/enetspace-nginx:${GIT_COMMIT}"
                 // Login to Docker Hub
                 sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                 // push images
-                sh "docker push edamh158/supspace-client:${GIT_COMMIT}"
-                sh "docker push edamh158/supspace-api:${GIT_COMMIT}"
-                sh "docker push edamh158/supspace-nginx:${GIT_COMMIT}"
+                sh "docker push youssef37/enetspace-client:${GIT_COMMIT}"
+                sh "docker push youssef37/enetspace-api:${GIT_COMMIT}"
+                sh "docker push youssef37/enetspace-nginx:${GIT_COMMIT}"
             }
             post {
                 always {
                     // remove local images
-                    sh "docker rmi edamh158/supspace-client:${GIT_COMMIT}"
-                    sh "docker rmi edamh158/supspace-api:${GIT_COMMIT}"
-                    sh "docker rmi edamh158/supspace-nginx:${GIT_COMMIT}"
-                    sh "docker rmi supspace-client"
-                    sh "docker rmi supspace-api"
+                    sh "docker rmi youssef37/enetspace-client:${GIT_COMMIT}"
+                    sh "docker rmi youssef37/enetspace-api:${GIT_COMMIT}"
+                    sh "docker rmi youssef37/enetspace-nginx:${GIT_COMMIT}"
+                    sh "docker rmi enetspace-client"
+                    sh "docker rmi enetspace-api"
                     sh "docker rmi mongo:4.4.17-focal"
                     sh "docker rmi nginx:alpine"
                 }
@@ -141,9 +141,9 @@ pipeline {
                 dir("./env-dev") {
                     sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
                      // Rolling update to production (waits for update to finish)
-                    sh 'docker service update --image edamh158/supspace-client:${GIT_COMMIT} prod_supspace-client'
-                    sh 'docker service update --image edamh158/supspace-api:${GIT_COMMIT} prod_supspace-api'
-                    sh 'docker service update --image edamh158/supspace-nginx:${GIT_COMMIT} prod_nginx'
+                    sh 'docker service update --image youssef37/enetspace-client:${GIT_COMMIT} prod_enetspace-client'
+                    sh 'docker service update --image youssef37/enetspace-api:${GIT_COMMIT} prod_enetspace-api'
+                    sh 'docker service update --image youssef37/enetspace-nginx:${GIT_COMMIT} prod_nginx'
                 }
             }
         }
@@ -156,8 +156,8 @@ pipeline {
             }
             post {
                 failure {
-                    sh "docker service rollback prod_supspace-client"
-                    sh "docker service rollback prod_supspace-api"
+                    sh "docker service rollback prod_enetspace-client"
+                    sh "docker service rollback prod_enetspace-api"
                     sh "docker service rollback prod_nginx"
                 }
             }
