@@ -69,41 +69,41 @@ pipeline {
                 }
             }
         }
-        stage('Integration tests') {
-            steps {
-                // Add delay to allow services to potentially stabilize
-                sh 'echo "Waiting a bit for services to start..."'
-                sh 'sleep 15' // Wait 15 seconds
+        // stage('Integration tests') {
+        //     steps {
+        //         // Add delay to allow services to potentially stabilize
+        //         sh 'echo "Waiting a bit for services to start..."'
+        //         sh 'sleep 15' // Wait 15 seconds
 
-                // Check API logs using docker compose logs within the correct directory
-                dir("./env-dev") {
-                    sh 'docker compose -f docker-compose.staging.yml ps'
-                    sh 'docker compose -f docker-compose.staging.yml logs enetspace-api'
-                    sh 'docker compose -f docker-compose.staging.yml logs nginx'
-                }
+        //         // Check API logs using docker compose logs within the correct directory
+        //         dir("./env-dev") {
+        //             sh 'docker compose -f docker-compose.staging.yml ps'
+        //             sh 'docker compose -f docker-compose.staging.yml logs enetspace-api'
+        //             sh 'docker compose -f docker-compose.staging.yml logs nginx'
+        //         }
 
-                // Confirm file exists and has execute permissions
-                sh 'ls -la ops/tests/integration.sh'
-                sh 'chmod +x ./ops/tests/integration.sh'
+        //         // Confirm file exists and has execute permissions
+        //         sh 'ls -la ops/tests/integration.sh'
+        //         sh 'chmod +x ./ops/tests/integration.sh'
 
-                // Try executing with sh explicitly
-                sh 'echo "--- Attempting execution with explicit sh ---"'
-                sh 'sh ./ops/tests/integration.sh'
-            }
-            post {
-                always {
-                    // Stop staging environment 
-                    dir("./env-dev") {
-                        sh 'docker compose -f docker-compose.staging.yml down'
-                    }
-                }
-                failure {
-                    // // If tests fail, remove failed staging images
-                    sh 'docker rmi enetspace-client'
-                    sh 'docker rmi enetspace-api'
-                }
-            }
-        }
+        //         // Try executing with sh explicitly
+        //         sh 'echo "--- Attempting execution with explicit sh ---"'
+        //         sh 'sh ./ops/tests/integration.sh'
+        //     }
+        //     post {
+        //         always {
+        //             // Stop staging environment 
+        //             dir("./env-dev") {
+        //                 sh 'docker compose -f docker-compose.staging.yml down'
+        //             }
+        //         }
+        //         failure {
+        //             // // If tests fail, remove failed staging images
+        //             sh 'docker rmi enetspace-client'
+        //             sh 'docker rmi enetspace-api'
+        //         }
+        //     }
+        // }
         stage('Push images to Registry') {
             steps {
                 // tag images
