@@ -172,7 +172,7 @@ pipeline {
                 // --- !!! IMPORTANT !!! ---
                 // Replace YOUR_SWARM_NODE_PUBLIC_IP with the actual IP address
                 // Replace 80 if your service publishes a different external port
-                sh "curl --fail --silent --show-error 'http://localhost:80'" 
+                sh "curl --fail --silent --show-error 'http://host.docker.internal:80'" 
             }
             post {
                 failure {
