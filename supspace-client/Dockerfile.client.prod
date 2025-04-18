@@ -1,0 +1,23 @@
+# using staged builds
+FROM node:18-buster as builder
+# make the directory where the project files will be stored
+RUN mkdir -p /usr/src/next-nginx
+# set it as the working directory so that we don't need to keep referencing it
+WORKDIR /usr/src/next-nginx
+# Copy the package.json file
+COPY package.json package.json
+# install project dependencies
+RUN npm install --legacy-peer-deps 
+# copy project files 
+# make sure to set up .dockerignore to copy only necessary files
+COPY . .
+
+# Set environment variables for the build - use relative or domain URLs
+ENV NEXT_PUBLIC_API=/api/v1
+# ENV NEXT_PUBLIC_SOCKET=/socket.io
+ENV NEXT_PUBLIC_SOCKET=/
+
+# run the build command which will build and export html files
+RUN npm run build
+
+CMD ["npm", "start"]
