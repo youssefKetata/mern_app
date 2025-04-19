@@ -1,5 +1,3 @@
-# filepath: c:\Users\PC6\projects\mern_app\ops\tests\integration.sh
-#!/bin/sh
 
 # Wait for nginx to be ready (max 5 seconds)
 for i in $(seq 1 5); do
