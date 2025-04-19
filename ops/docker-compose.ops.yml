@@ -29,6 +29,7 @@ services:
     networks:
       - ops_overlay_network
       - default
+      - prod_default
 
   grafana:
     image: grafana/grafana
